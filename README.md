@@ -31,13 +31,13 @@ docker inspect node-express-container
 * Open a console in the project directory:
 * Run the following command:
 ```bash
-docker run --name node-express-container -it -p 3001:3000 --rm -v /$(pwd):/app node-express:latest
+docker run --name node-express-container -it -p 3000:3000 --rm -v /$(pwd):/app node-express:latest
 ```
 * Go to any browse, on the path section put http://localhost:3001/server-info then you are going to see the host information
 * Modify the the host file -> src/index.js
 * Run again:
 ```bash
-docker run --name node-express-container -p 3001:3000 --rm -v /$(pwd):/app node-express:latest
+docker run --name node-express-container -p 3000:3000 --rm -v /$(pwd):/app node-express:latest
 ```
 * Go to the browser and refresh the page.
 
