@@ -1,11 +1,11 @@
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.get("/server-info", (req, res) => {
   const date = new Date();
 
-  res.jsonp({
+  res.json({
     hour: date.toTimeString(),
     date: date.toDateString(),
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -14,6 +14,6 @@ app.get("/server-info", (req, res) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+const server = app.listen(port);
+
+module.exports = { app, server };
