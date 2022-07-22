@@ -41,4 +41,16 @@ docker run --name node-express-container -p 3000:3000 --rm -v /$(pwd):/app node-
 ```
 * Go to the browser and refresh the page.
 
-
+### Using docker-compose:
+* Run the following command for creating an image of the current app called "docker-host-info" and to run the containers for the nexus, jenkins, portainer, postgres, sonarqube and app services:
+```bash
+docker-compose up --build
+```
+* Review the running containers. If the sonarqube container has EXIT status then review the logs using the next command:
+```bash
+docker-compose logs sonarqube
+```
+* If the error is _ERROR: Max virtual memory areas vm.max_map_count 65530 is too low_. Then run the next command and restart docker service:
+```bash
+sudo sysctl -w vm.max_map_count=262144
+```
