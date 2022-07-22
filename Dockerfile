@@ -1,13 +1,18 @@
-# specify the node base image with your desired version node:<version>
+# MULTISTAGE - TESTING
 FROM node:alpine
 
-#COPY ONLY NEEDED FILES
 COPY ./package.json /app/package.json
 COPY ./src app/src
 WORKDIR /app
-#EXPOSE PORT 300 ON WICH RUNS THE API
-EXPOSE 3000
-#INSTALL ALL REQUIRED DEPENDENCIES
 RUN npm install
-#START RUNNING THE API
+RUN npm run test
+
+# MULTISTAGE - RUNNING API
+FROM node:alpine
+
+COPY --from=0 /app/package.json /app/package.json
+COPY --from=0 /app/src app/src
+WORKDIR /app
+EXPOSE 3000
+RUN npm install
 CMD npm start

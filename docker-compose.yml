@@ -1,2 +1,86 @@
-version: '1.29.2'
+version: '3.8'
 services:
+  nexus:
+    image: sonatype/nexus3
+    ports:
+      - "8081:8081"
+    container_name: nexus
+    networks:
+      - homework
+
+  jenkins:
+    image: jenkins/jenkins:lts-jdk11
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    restart: on-failure
+    container_name: jenkins
+    networks:
+      - homework
+
+  portainer:
+    image: portainer/portainer-ee:latest
+    ports:
+      - "8000:8000"
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    restart: always
+    container_name: portainer
+    networks:
+      - homework
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    networks:
+      - homework
+
+  sonarqube:
+    image: sonarqube
+    container_name: sonarqube
+    networks:
+      - homework
+    depends_on:
+      - postgres
+    ports:
+      - "9000:9000"
+    environment:
+      - sonar.jdbc.url=jdbc:postgresql://postgres/postgres
+      - sonar.jdbc.username=postgres
+      - sonar.jdbc.password=postgres
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+
+  app:
+    image: docker-host-info
+    volumes:
+      - ./src:/app/src
+    ports:
+      - "3000:3000"
+    container_name: docker-host-info
+    working_dir: /app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - homework
+
+networks:
+  homework:
+
+
+volumes:
+  portainer_data:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  postgresql:
+  postgresql_data:
